@@ -5,11 +5,24 @@ import classNames from 'classnames'
 import { billListData } from '@/contants'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import dayjs from 'dayjs'
 
 const New = () => {
     const navigate = useNavigate()
 
     const [billType, setBillType] = useState('pay') // pay-支出 income-收入
+    const [isDateVisible, setDateVisible] = useState(false)
+    const [currentDate, setCurrentDate] = useState(new Date())
+
+    const handleDateConfirm = (date) => {
+        setCurrentDate(date)
+    }
+    const getDateString = (date) => {
+        if (dayjs(date).format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD"))
+            return '今天'
+        
+        return dayjs(date).format('YYYY-MM-DD')
+    }
 
     return (
         <div className="keepAccounts">
@@ -37,13 +50,17 @@ const New = () => {
 
                 <div className="kaFormWrapper">
                     <div className="kaForm">
-                        <div className="date">
+                        <div className="date" onClick={() => setDateVisible(true)}>
                             <Icon type="calendar" className="icon" />
-                            <span className="text">{'今天'}</span>
+                            <span className="text">{getDateString(currentDate)}</span>
                             <DatePicker
                                 className="kaDate"
                                 title="记账日期"
+                                visible={isDateVisible}
                                 max={new Date()}
+                                onCancel={() => setDateVisible(false)}
+                                onConfirm={handleDateConfirm}
+                                onClose={() => setDateVisible(false)}
                             />
                         </div>
                         <div className="kaInput">
