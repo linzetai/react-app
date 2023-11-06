@@ -2,23 +2,25 @@ import classNames from 'classnames'
 import './index.scss'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
+import { billTypeToName } from '@/contants'
 
 const DailyBill = (params) => {
+	const { date, billList } = params
 	const dayResult = useMemo(() => {
 		// 支出 / 收入 / 结余
-		const pay = params.billList.filter(item => item.type === 'pay').reduce((a, c) => a + c.money, 0)
-		const income = params.billList.filter(item => item.type === 'income').reduce((a, c) => a + c.money, 0)
+		const pay = billList.filter(item => item.type === 'pay').reduce((a, c) => a + c.money, 0)
+		const income = billList.filter(item => item.type === 'income').reduce((a, c) => a + c.money, 0)
 		return {
 			pay,
 			income,
 			total: pay + income
 		}
-	}, [params.billList])
+	}, [billList])
 	return (
 		<div className={classNames('dailyBill')}>
 			<div className="header">
 				<div className="dateIcon">
-					<span className="date">{dayjs(params.date).format("MM月DD日")}</span>
+					<span className="date">{dayjs(date).format("MM月DD日")}</span>
 					<span className={classNames('arrow')}></span>
 				</div>
 				<div className="oneLineOverview">
@@ -34,6 +36,22 @@ const DailyBill = (params) => {
 						<span className="money">{dayResult.total}</span>
 						<span className="type">结余</span>
 					</div>
+				</div>
+				<div className="billList">
+					{
+						billList.map(item => {
+							return (
+								<div className="bill" key={item.id}>
+									<div className="detail">
+										<div className="billType">{billTypeToName[item.useFor]}</div>
+									</div>
+									<div className={classNames('money', item.type)}>
+										{item.money.toFixed(2)}
+									</div>
+								</div>
+							)
+						})
+					}
 				</div>
 			</div>
 		</div>
