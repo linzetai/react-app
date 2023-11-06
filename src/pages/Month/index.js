@@ -3,8 +3,19 @@ import { useState } from 'react'
 import classNames from 'classnames'
 import './index.scss'
 import dayjs from 'dayjs'
+import { useSelector } from 'react-redux'
+import _ from 'lodash'
+import { useMemo } from 'react'
 
 const Month = () => {
+    // 按月做数据分组
+    const billList = useSelector(state => state.bill.billList)
+    const monthGroup = useMemo(() => {
+        return _.groupBy(billList, (item) => dayjs(item.date).format('YYYY-MM'))
+    }, [billList])
+
+    console.log(monthGroup)
+
     const [dateVisible, setDateVisible] = useState(false)
     const [currentDate, setCurrentDate] = useState(() => {
         return dayjs(new Date()).format('YYYY-MM')
