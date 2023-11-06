@@ -3,6 +3,7 @@ import './index.scss'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
 import { billTypeToName } from '@/contants'
+import Icon from '@/components/Icon'
 
 const DailyBill = (params) => {
 	const { date, billList } = params
@@ -45,6 +46,7 @@ const DailyBill = (params) => {
 						billList.map(item => {
 							return (
 								<div className="bill" key={item.id}>
+									<Icon type={item.useFor}/>
 									<div className="detail">
 										<div className="billType">{billTypeToName[item.useFor]}</div>
 									</div>
