@@ -6,6 +6,8 @@ import { billListData } from '@/contants'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import dayjs from 'dayjs'
+import { addBillList } from '@/store/modules/billStore'
+import { useDispatch } from 'react-redux'
 
 const New = () => {
     const navigate = useNavigate()
@@ -13,6 +15,8 @@ const New = () => {
     const [billType, setBillType] = useState('pay') // pay-支出 income-收入
     const [isDateVisible, setDateVisible] = useState(false)
     const [currentDate, setCurrentDate] = useState(new Date())
+    const [money, setMoney] = useState(0.00)
+    const [useFor, setUseFor] = useState('')
 
     const handleDateConfirm = (date) => {
         setCurrentDate(date)
@@ -22,6 +26,22 @@ const New = () => {
             return '今天'
         
         return dayjs(date).format('YYYY-MM-DD')
+    }
+
+    const moneyChange = (value) => {
+        setMoney(value)
+    }
+
+    const dispatch = useDispatch()
+    const saveBill = () => {
+        const data = {
+            type: billType,
+            money: billType === 'pay' ? -money : +money,
+            date: currentDate,
+            useFor
+        }
+        dispatch(addBillList(data))
+        navigate(-1)
     }
 
     return (
@@ -68,6 +88,8 @@ const New = () => {
                                 className="input"
                                 placeholder="0.00"
                                 type="number"
+                                value={money}
+                                onChange={moneyChange}
                             />
                             <span className="iconYuan">¥</span>
                         </div>
@@ -89,7 +111,7 @@ const New = () => {
                                                 ''
                                             )}
                                             key={item.type}
-
+                                            onClick={() => setUseFor(item.type)}
                                         >
                                             <div className="icon">
                                                 <Icon type={item.type} />
@@ -105,7 +127,7 @@ const New = () => {
             </div>
 
             <div className="btns">
-                <Button className="btn save">
+                <Button className="btn save" onClick={saveBill}>
                     保 存
                 </Button>
             </div>
