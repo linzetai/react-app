@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import './index.scss'
 import dayjs from 'dayjs'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { billTypeToName } from '@/contants'
 
 const DailyBill = (params) => {
@@ -16,12 +16,15 @@ const DailyBill = (params) => {
 			total: pay + income
 		}
 	}, [billList])
+
+	const [isShow, setShow] = useState(false)
+
 	return (
 		<div className={classNames('dailyBill')}>
 			<div className="header">
 				<div className="dateIcon">
 					<span className="date">{dayjs(date).format("MM月DD日")}</span>
-					<span className={classNames('arrow')}></span>
+					<span className={classNames('arrow', isShow && 'expand')} onClick={() => setShow(!isShow)}></span>
 				</div>
 				<div className="oneLineOverview">
 					<div className="pay">
@@ -37,7 +40,7 @@ const DailyBill = (params) => {
 						<span className="type">结余</span>
 					</div>
 				</div>
-				<div className="billList">
+				<div className="billList" style={{display: isShow ? 'block': "none"}}>
 					{
 						billList.map(item => {
 							return (
