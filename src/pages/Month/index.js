@@ -6,6 +6,14 @@ import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import { useMemo } from 'react'
+import DailyBill from './components/DailyBill'
+
+// 字符串比较函数
+const compareFnDesc = (a, b) => {
+    if (a === b) return 0;
+    else if (a < b) return 1;
+    else return -1;
+}
 
 const Month = () => {
     // 按月做数据分组
@@ -14,7 +22,6 @@ const Month = () => {
         return _.groupBy(billList, (item) => dayjs(item.date).format('YYYY-MM'))
     }, [billList])
 
-    
     const [dateVisible, setDateVisible] = useState(false)
     const [currentDate, setCurrentDate] = useState(() => {
         return dayjs(new Date()).format('YYYY-MM')
@@ -38,6 +45,16 @@ const Month = () => {
         const nowDate = dayjs().format('YYYY-MM')
         setMonthList(monthGroup[nowDate] ? monthGroup[nowDate] : [])
     }, [monthGroup])
+
+    // 当前月按照日做分组
+    const dayGroup = useMemo(() => {
+        const groupData = _.groupBy(currentMonthList, (item) => dayjs(item.date).format('YYYY-MM-DD'))
+        const keys = Object.keys(groupData)
+        return {
+            groupData,
+            keys
+        }
+    }, [currentMonthList])
 
     // 确认回调
     const handleDateConfirm = (date) => {
@@ -87,6 +104,11 @@ const Month = () => {
                         onClose={() => setDateVisible(false)}
                     />
                 </div>
+                {
+                    dayGroup.keys.sort(compareFnDesc).map(key => {
+                        return <DailyBill key={key} date={key} billList={dayGroup.groupData[key]} />
+                    })
+                }
             </div>
         </div >
     )

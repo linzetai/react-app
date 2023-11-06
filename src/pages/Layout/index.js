@@ -32,6 +32,7 @@ const Layout = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getBillList())
+        navigate('/month')
     }, [dispatch])
 
     // 切换菜单跳转路由
