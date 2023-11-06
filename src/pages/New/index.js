@@ -108,7 +108,7 @@ const New = () => {
                                         <div
                                             className={classNames(
                                                 'item',
-                                                ''
+                                                useFor === item.type && 'selected'
                                             )}
                                             key={item.type}
                                             onClick={() => setUseFor(item.type)}
